@@ -3,17 +3,17 @@ import requests
 import json
 from datetime import datetime, timedelta
 
-# Configuration
-API_KEY = "750d0cc3bfed6e047f325078ca4962d7"  # Replace with your API key
+
+API_KEY = "MY_API_KEY_YOU_CANT_SEE"  
 BASE_URL = "https://gnews.io/api/v4/search"
 QUERY = "Tesla"
 START_DATE = "2010-06-29"
 END_DATE = "2022-03-24"
 OUTPUT_FOLDER = "tweets_articles"
 LANG = "en"
-MAX_RESULTS = 100  # Adjust based on API limits
+MAX_RESULTS = 100  
 
-# Create the output folder if it doesn't exist
+# Create the output folder if needed
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
 # Helper function to fetch news articles

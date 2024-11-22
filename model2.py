@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 # Load dataset
-df = pd.read_csv("tesla_data_other.csv", sep=",")
+df = pd.read_csv("Tesla_data_final.csv", sep=",")
 
 # Remove unnecessary columns. volume does not help and is drastically bigger than all the other ones. Target_close_7d was used to create the target variable in the old model but now causes data leakage
 df.drop(columns=['Volume', 'Target_Close_7d'], inplace=True, errors='ignore')
@@ -33,15 +33,15 @@ X_test_scaled = np.reshape(X_test_scaled, (X_test_scaled.shape[0], 1, X_test_sca
 
 # Build the LSTM model
 LSTM_model = Sequential()
-LSTM_model.add(LSTM(units=128, return_sequences=True, input_shape=(1, X_train_scaled.shape[2])))
-LSTM_model.add(Dropout(0.2))
-LSTM_model.add(LSTM(units=64, return_sequences=False))
-LSTM_model.add(Dropout(0.1))
+LSTM_model.add(LSTM(units=256, return_sequences=True, input_shape=(1, X_train_scaled.shape[2])))
+LSTM_model.add(Dropout(0.3))
+LSTM_model.add(LSTM(units=128, return_sequences=False))
+LSTM_model.add(Dropout(0.3))
 LSTM_model.add(Dense(units=1, activation='sigmoid'))
 LSTM_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=[AUC(name='auc')])
 
 # Train the model
-history = LSTM_model.fit(X_train_scaled, y_train, epochs=150, batch_size=32, validation_data=(X_test_scaled, y_test))
+history = LSTM_model.fit(X_train_scaled, y_train, epochs=100, batch_size=32, validation_data=(X_test_scaled, y_test))
 
 # Evaluate the model on the test data
 test_loss, test_auc = LSTM_model.evaluate(X_test_scaled, y_test)
@@ -50,7 +50,7 @@ print(f"Test AUC: {test_auc}")
 
 # Make predictions
 y_pred = LSTM_model.predict(X_test_scaled)
-y_pred_binary = (y_pred > 0.5).astype(int)
+y_pred_binary = (y_pred > 0.3).astype(int)
 
 # Identify incorrect predictions
 incorrect_predictions = y_test != y_pred_binary.flatten()
